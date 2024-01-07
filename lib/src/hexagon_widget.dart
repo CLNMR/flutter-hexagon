@@ -34,6 +34,7 @@ class HexagonWidget extends StatelessWidget {
     this.elevation = 0,
     this.inBounds = true,
     required this.type,
+    this.onTap,
   })  : assert(width != null || height != null),
         assert(elevation >= 0),
         super(key: key);
@@ -61,6 +62,7 @@ class HexagonWidget extends StatelessWidget {
     this.elevation = 0,
     this.cornerRadius = 0.0,
     this.inBounds = true,
+    this.onTap,
   })  : assert(width != null || height != null),
         assert(elevation >= 0),
         this.type = HexagonType.FLAT,
@@ -89,6 +91,7 @@ class HexagonWidget extends StatelessWidget {
     this.elevation = 0,
     this.cornerRadius = 0.0,
     this.inBounds = true,
+    this.onTap,
   })  : assert(width != null || height != null),
         assert(elevation >= 0),
         this.type = HexagonType.POINTY,
@@ -103,6 +106,7 @@ class HexagonWidget extends StatelessWidget {
   final Color? color;
   final double padding;
   final double cornerRadius;
+  final VoidCallback? onTap;
 
   Size _innerSize() {
     var flatFactor = type.flatFactor(inBounds);
@@ -137,26 +141,29 @@ class HexagonWidget extends StatelessWidget {
     HexagonPathBuilder pathBuilder = HexagonPathBuilder(type,
         inBounds: inBounds, borderRadius: cornerRadius);
 
-    return Align(
-      child: Container(
-        padding: EdgeInsets.all(padding),
-        width: innerSize.width,
-        height: innerSize.height,
-        child: CustomPaint(
-          painter: HexagonPainter(
-            pathBuilder,
-            color: color,
-            elevation: elevation,
-          ),
-          child: ClipPath(
-            clipper: HexagonClipper(pathBuilder),
-            child: OverflowBox(
-              alignment: Alignment.center,
-              maxHeight: contentSize.height,
-              maxWidth: contentSize.width,
-              child: Align(
+    return GestureDetector(
+      onTap: onTap,
+      child: Align(
+        child: Container(
+          padding: EdgeInsets.all(padding),
+          width: innerSize.width,
+          height: innerSize.height,
+          child: CustomPaint(
+            painter: HexagonPainter(
+              pathBuilder,
+              color: color,
+              elevation: elevation,
+            ),
+            child: ClipPath(
+              clipper: HexagonClipper(pathBuilder),
+              child: OverflowBox(
                 alignment: Alignment.center,
-                child: child,
+                maxHeight: contentSize.height,
+                maxWidth: contentSize.width,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: child,
+                ),
               ),
             ),
           ),
@@ -202,20 +209,18 @@ class HexagonWidgetBuilder {
     Widget? child,
     bool replaceChild = false,
   }) {
-    return GestureDetector(
+    return HexagonWidget(
+      key: key,
+      type: type,
+      inBounds: inBounds,
+      width: width,
+      height: height,
+      child: replaceChild ? child : this.child,
+      color: color,
+      padding: padding ?? 0.0,
+      cornerRadius: cornerRadius ?? 0.0,
+      elevation: elevation ?? 0,
       onTap: onTap,
-      child: HexagonWidget(
-        key: key,
-        type: type,
-        inBounds: inBounds,
-        width: width,
-        height: height,
-        child: replaceChild ? child : this.child,
-        color: color,
-        padding: padding ?? 0.0,
-        cornerRadius: cornerRadius ?? 0.0,
-        elevation: elevation ?? 0,
-      ),
     );
   }
 }
