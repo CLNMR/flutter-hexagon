@@ -173,6 +173,7 @@ class HexagonWidgetBuilder {
   final double? padding;
   final double? cornerRadius;
   final Widget? child;
+  final VoidCallback? onTap;
 
   HexagonWidgetBuilder({
     this.key,
@@ -181,6 +182,7 @@ class HexagonWidgetBuilder {
     this.padding,
     this.cornerRadius,
     this.child,
+    this.onTap,
   });
 
   HexagonWidgetBuilder.transparent({
@@ -188,10 +190,11 @@ class HexagonWidgetBuilder {
     this.padding,
     this.cornerRadius,
     this.child,
+    this.onTap,
   })  : this.elevation = 0,
         this.color = Colors.transparent;
 
-  HexagonWidget build({
+  Widget build({
     required HexagonType type,
     required inBounds,
     double? width,
@@ -199,17 +202,20 @@ class HexagonWidgetBuilder {
     Widget? child,
     bool replaceChild = false,
   }) {
-    return HexagonWidget(
-      key: key,
-      type: type,
-      inBounds: inBounds,
-      width: width,
-      height: height,
-      child: replaceChild ? child : this.child,
-      color: color,
-      padding: padding ?? 0.0,
-      cornerRadius: cornerRadius ?? 0.0,
-      elevation: elevation ?? 0,
+    return GestureDetector(
+      onTap: onTap,
+      child: HexagonWidget(
+        key: key,
+        type: type,
+        inBounds: inBounds,
+        width: width,
+        height: height,
+        child: replaceChild ? child : this.child,
+        color: color,
+        padding: padding ?? 0.0,
+        cornerRadius: cornerRadius ?? 0.0,
+        elevation: elevation ?? 0,
+      ),
     );
   }
 }
