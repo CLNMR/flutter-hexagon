@@ -201,7 +201,7 @@ class HexagonWidgetBuilder {
   })  : this.elevation = 0,
         this.color = Colors.transparent;
 
-  Widget build({
+  HexagonWidget build({
     required HexagonType type,
     required inBounds,
     double? width,
