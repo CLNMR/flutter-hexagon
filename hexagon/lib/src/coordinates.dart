@@ -1,12 +1,18 @@
 import 'dart:math';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'coordinates.g.dart';
+
 ///Unified representation of cube and axial coordinates systems.
-///
+@JsonSerializable()
 class Coordinates {
-  ///Cube constructor
+  Coordinates(int q, int r) : this.axial(q, r);
+
+  /// Cube constructor
   const Coordinates.cube(this.x, this.y, this.z);
 
-  ///Axial constructor
+  /// Axial constructor
   Coordinates.axial(int q, int r)
       : this.x = q,
         this.y = (-q - r).toInt(),
@@ -18,7 +24,7 @@ class Coordinates {
 
   int get r => z;
 
-  ///Distance measured in steps between tiles. A single step is only going over edge of neighbouring tiles.
+  ///Distance measured in steps between tiles. A single step is only going over edge of neighboring tiles.
   int distance(Coordinates other) {
     return max(
         (x - other.x).abs(), max((y - other.y).abs(), (z - other.z).abs()));
@@ -44,6 +50,19 @@ class Coordinates {
 
   @override
   String toString() => 'Coordinates[cube: ($x, $y, $z), axial: ($q, $r)]';
+
+  static List<Coordinates> fromList(List<(int, int)> list) =>
+      list.map((e) => Coordinates.axial(e.$1, e.$2)).toList();
+
+  static List<Coordinates> generateRings(int i) {
+    // TODO: implement generateRings
+    return [];
+  }
+
+  factory Coordinates.fromJson(Map<String, dynamic> json) =>
+      _$CoordinatesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CoordinatesToJson(this);
 }
 
 class HexDirections {
