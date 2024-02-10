@@ -28,6 +28,7 @@ class HexagonWidget extends StatelessWidget {
     this.width,
     this.height,
     this.color,
+    this.borderColor,
     this.child,
     this.padding = 0.0,
     this.cornerRadius = 0.0,
@@ -57,6 +58,7 @@ class HexagonWidget extends StatelessWidget {
     this.width,
     this.height,
     this.color,
+    this.borderColor,
     this.child,
     this.padding = 0.0,
     this.elevation = 0,
@@ -86,6 +88,7 @@ class HexagonWidget extends StatelessWidget {
     this.width,
     this.height,
     this.color,
+    this.borderColor,
     this.child,
     this.padding = 0.0,
     this.elevation = 0,
@@ -104,6 +107,7 @@ class HexagonWidget extends StatelessWidget {
   final bool inBounds;
   final Widget? child;
   final Color? color;
+  final Color? borderColor;
   final double padding;
   final double cornerRadius;
   final VoidCallback? onTap;
@@ -152,6 +156,7 @@ class HexagonWidget extends StatelessWidget {
             painter: HexagonPainter(
               pathBuilder,
               color: color,
+              borderColor: borderColor,
               elevation: elevation,
             ),
             child: ClipPath(
@@ -177,6 +182,7 @@ class HexagonWidgetBuilder {
   final Key? key;
   final double? elevation;
   final Color? color;
+  final Color? borderColor;
   final double? padding;
   final double? cornerRadius;
   final Widget? child;
@@ -186,6 +192,7 @@ class HexagonWidgetBuilder {
     this.key,
     this.elevation,
     this.color,
+    this.borderColor,
     this.padding,
     this.cornerRadius,
     this.child,
@@ -199,7 +206,8 @@ class HexagonWidgetBuilder {
     this.child,
     this.onTap,
   })  : this.elevation = 0,
-        this.color = Colors.transparent;
+        this.color = Colors.transparent,
+        this.borderColor = Colors.transparent;
 
   HexagonWidget build({
     required HexagonType type,
@@ -217,6 +225,7 @@ class HexagonWidgetBuilder {
       height: height,
       child: replaceChild ? child : this.child,
       color: color,
+      borderColor: borderColor,
       padding: padding ?? 0.0,
       cornerRadius: cornerRadius ?? 0.0,
       elevation: elevation ?? 0,
