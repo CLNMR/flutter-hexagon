@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hexagon/hexagon.dart';
 
-import '../hexagon_type.dart';
 import '../hexagon_widget.dart';
-import 'coordinates.dart';
 
 class HexagonGrid extends StatelessWidget {
   ///Hexagon shaped grid of hexagons.

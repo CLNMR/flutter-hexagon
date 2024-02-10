@@ -1,11 +1,11 @@
-library hexagon;
+library hexagon_ui;
 
 import 'package:flutter/material.dart';
+import 'package:hexagon/hexagon.dart';
 
 import 'hexagon_clipper.dart';
 import 'hexagon_painter.dart';
 import 'hexagon_path_builder.dart';
-import 'hexagon_type.dart';
 
 class HexagonWidget extends StatelessWidget {
   /// Preferably provide one dimension ([width] or [height]) and the other will be calculated accordingly to hexagon aspect ratio

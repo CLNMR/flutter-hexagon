@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'hexagon_type.dart';
+import 'package:hexagon/hexagon.dart';
 
 class HexagonPathBuilder {
   final HexagonType type;

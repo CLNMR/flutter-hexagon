@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hexagon/hexagon.dart';
-import 'package:hexagon/src/hexagon_path_builder.dart';
+import 'package:hexagon_ui/hexagon_ui.dart';
 
 void main() {
   testWidgets('HexagonWidget exists.', (WidgetTester tester) async {

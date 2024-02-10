@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
+import 'package:hexagon_ui/hexagon_ui.dart';
 
 void main() {
   runApp(const MyApp());
@@ -132,8 +133,7 @@ class MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                     child: Text('Pointy'),
                                   )
                                 ],
-                                selectedItemBuilder: (context) =>
-                                [
+                                selectedItemBuilder: (context) => [
                                   const Center(child: Text('Flat')),
                                   const Center(child: Text('Pointy')),
                                 ],

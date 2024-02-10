@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hexagon/src/hexagon_path_builder.dart';
+import 'package:hexagon_ui/src/hexagon_path_builder.dart';
 
 class HexagonClipper extends CustomClipper<Path> {
   HexagonClipper(this.pathBuilder);
