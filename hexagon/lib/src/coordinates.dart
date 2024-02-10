@@ -54,9 +54,16 @@ class Coordinates {
   static List<Coordinates> fromList(List<(int, int)> list) =>
       list.map((e) => Coordinates.axial(e.$1, e.$2)).toList();
 
-  static List<Coordinates> generateRings(int i) {
-    // TODO: implement generateRings
-    return [];
+  static List<Coordinates> generateRings(int radius) {
+    List<Coordinates> cells = [];
+    for (int q = -radius; q <= radius; q++) {
+      int r1 = max(-radius, -q - radius);
+      int r2 = min(radius, -q + radius);
+      for (int r = r1; r <= r2; r++) {
+        cells.add(Coordinates(q, r));
+      }
+    }
+    return cells;
   }
 
   factory Coordinates.fromJson(Map<String, dynamic> json) =>
