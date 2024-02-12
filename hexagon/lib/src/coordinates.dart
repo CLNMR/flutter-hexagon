@@ -49,8 +49,10 @@ class Coordinates {
   bool operator ==(Object other) =>
       other is Coordinates && other.x == x && other.y == y && other.z == z;
 
+  /// The hash code is unique up to a grid size of 2^26 - 1 rings.
   @override
-  int get hashCode => (128 + x) + (128 + y) * 256 + (128 + z) * 65536;
+  int get hashCode =>
+      (pow(2, 25).toInt() + q) + (pow(2, 25).toInt() + r) * pow(2, 26).toInt();
 
   ///Constant value of space center
   static const Coordinates zero = Coordinates.cube(0, 0, 0);
