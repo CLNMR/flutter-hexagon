@@ -23,6 +23,8 @@ class HexagonGrid extends StatelessWidget {
   /// [buildTile] - Provide a HexagonWidgetBuilder that will be used to create given tile (at col,row). Return null to use default [hexagonBuilder].
   ///
   /// [buildChild] - Provide a Widget to be used in a HexagonWidget for given tile (col,row). Any returned value will override child provided in [buildTile] or hexagonBuilder.
+  ///
+  /// [rotation] - Rotation of the grid in 60 degrees steps clockwise (coordinates are shifted).
   HexagonGrid({
     required this.hexType,
     this.depth = 0,
@@ -33,6 +35,7 @@ class HexagonGrid extends StatelessWidget {
     this.buildTile,
     this.buildChild,
     this.hexagonBuilder,
+    this.rotation = 0,
   }) : assert(depth >= 0);
 
   ///Hexagon shaped grid of pointy hexagons.
@@ -52,6 +55,8 @@ class HexagonGrid extends StatelessWidget {
   /// [buildTile] - Provide a HexagonWidgetBuilder that will be used to create given tile (at col,row). Return null to use default [hexagonBuilder].
   ///
   /// [buildChild] - Provide a Widget to be used in a HexagonWidget for given tile (col,row). Any returned value will override child provided in [buildTile] or hexagonBuilder.
+  ///
+  /// [rotation] - Rotation of the grid in 60 degrees steps clockwise (coordinates are shifted).
   HexagonGrid.pointy({
     this.width,
     this.height,
@@ -61,6 +66,7 @@ class HexagonGrid extends StatelessWidget {
     this.buildTile,
     this.buildChild,
     this.hexagonBuilder,
+    this.rotation = 0,
   })  : assert(depth >= 0),
         this.hexType = HexagonType.POINTY;
 
@@ -81,6 +87,8 @@ class HexagonGrid extends StatelessWidget {
   /// [buildTile] - Provide a HexagonWidgetBuilder that will be used to create given tile (at col,row). Return null to use default [hexagonBuilder].
   ///
   /// [buildChild] - Provide a Widget to be used in a HexagonWidget for given tile (col,row). Any returned value will override child provided in [buildTile] or hexagonBuilder.
+  ///
+  /// [rotation] - Rotation of the grid in 60 degrees steps clockwise (coordinates are shifted).
   HexagonGrid.flat({
     this.width,
     this.height,
@@ -90,6 +98,7 @@ class HexagonGrid extends StatelessWidget {
     this.buildTile,
     this.buildChild,
     this.hexagonBuilder,
+    this.rotation = 0,
   })  : assert(depth >= 0),
         this.hexType = HexagonType.FLAT;
 
@@ -102,6 +111,7 @@ class HexagonGrid extends StatelessWidget {
   final HexagonWidgetBuilder? hexagonBuilder;
   final Widget Function(Coordinates coordinates)? buildChild;
   final HexagonWidgetBuilder Function(Coordinates coordinates)? buildTile;
+  final int rotation;
 
   int get _maxHexCount => 1 + (depth * 2);
 
@@ -200,7 +210,8 @@ class HexagonGrid extends StatelessWidget {
                           hexType.isPointy ? crossIndex : currentDepth,
                           hexType.isPointy ? currentDepth : crossIndex,
                         );
-                        return buildHex.call(coordinates);
+                        final rotated = coordinates.rotateClockwise(rotation);
+                        return buildHex.call(rotated);
                       });
                     },
                   );

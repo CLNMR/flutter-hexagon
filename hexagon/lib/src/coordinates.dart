@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:hexagon/src/hexagon_type.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'coordinates.g.dart';
@@ -38,12 +39,18 @@ class Coordinates {
     return Coordinates.cube(x - other.x, y - other.y, z - other.z);
   }
 
+  Coordinates rotateClockwise(int steps) {
+    if (steps == 0) return this;
+    if (steps < 0) return rotateClockwise(steps % 6);
+    return Coordinates.cube(-y, -z, -x).rotateClockwise(steps - 1);
+  }
+
   @override
   bool operator ==(Object other) =>
       other is Coordinates && other.x == x && other.y == y && other.z == z;
 
   @override
-  int get hashCode => x ^ y ^ z;
+  int get hashCode => (128 + x) + (128 + y) * 256 + (128 + z) * 65536;
 
   ///Constant value of space center
   static const Coordinates zero = Coordinates.cube(0, 0, 0);
@@ -70,20 +77,36 @@ class Coordinates {
       _$CoordinatesFromJson(json);
 
   Map<String, dynamic> toJson() => _$CoordinatesToJson(this);
+
+  List<Coordinates> getNeighbors({HexagonType type = HexagonType.FLAT}) {
+    if (type == HexagonType.FLAT) {
+      return HexDirectionsFlat.values.map((e) => this + e.coord).toList();
+    } else {
+      return HexDirectionsPointy.values.map((e) => this + e.coord).toList();
+    }
+  }
 }
 
-class HexDirections {
-  static Coordinates pointyRight = Coordinates.axial(1, 0);
-  static Coordinates pointyLeft = Coordinates.axial(-1, 0);
-  static Coordinates pointyTopRight = Coordinates.axial(1, -1);
-  static Coordinates pointyTopLeft = Coordinates.axial(0, -1);
-  static Coordinates pointyDownRight = Coordinates.axial(0, 1);
-  static Coordinates pointyDownLeft = Coordinates.axial(-1, 1);
+enum HexDirectionsPointy {
+  pointyRight(Coordinates.cube(1, 1, 0)),
+  pointyLeft(Coordinates.cube(-1, 1, 0)),
+  pointyTopRight(Coordinates.cube(1, 0, -1)),
+  pointyTopLeft(Coordinates.cube(0, 1, -1)),
+  pointyDownRight(Coordinates.cube(0, -1, 1)),
+  pointyDownLeft(Coordinates.cube(-1, 0, 1));
 
-  static Coordinates flatTop = Coordinates.axial(0, -1);
-  static Coordinates flatDown = Coordinates.axial(0, 1);
-  static Coordinates flatRightTop = Coordinates.axial(1, -1);
-  static Coordinates flatRightDown = Coordinates.axial(1, 0);
-  static Coordinates flatLeftTop = Coordinates.axial(-1, 0);
-  static Coordinates flatLeftDown = Coordinates.axial(-1, 1);
+  const HexDirectionsPointy(this.coord);
+  final Coordinates coord;
+}
+
+enum HexDirectionsFlat {
+  flatTop(Coordinates.cube(0, 1, -1)),
+  flatDown(Coordinates.cube(0, -1, 1)),
+  flatRightTop(Coordinates.cube(1, 0, -1)),
+  flatRightDown(Coordinates.cube(1, -1, 0)),
+  flatLeftTop(Coordinates.cube(-1, 1, 0)),
+  flatLeftDown(Coordinates.cube(-1, 0, 1));
+
+  const HexDirectionsFlat(this.coord);
+  final Coordinates coord;
 }
