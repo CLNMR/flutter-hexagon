@@ -25,6 +25,13 @@ class Coordinates {
 
   int get r => z;
 
+  /// Get a short axial representation of the coordinates.
+  String get axialRep =>
+      '(${_convertToPrettyNum(q)}, ${_convertToPrettyNum(r)})';
+
+  /// Convert the given integer to a pretty (i.e. no -0 or 0.0) string.
+  String _convertToPrettyNum(int num) => (num == 0) ? '0' : num.toString();
+
   ///Distance measured in steps between tiles. A single step is only going over edge of neighboring tiles.
   int distance(Coordinates other) {
     return max(
