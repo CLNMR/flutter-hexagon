@@ -35,6 +35,7 @@ class HexagonGrid extends StatelessWidget {
     this.buildTile,
     this.buildChild,
     this.hexagonBuilder,
+    this.lines,
     this.rotation = 0,
   }) : assert(depth >= 0);
 
@@ -66,6 +67,7 @@ class HexagonGrid extends StatelessWidget {
     this.buildTile,
     this.buildChild,
     this.hexagonBuilder,
+    this.lines,
     this.rotation = 0,
   })  : assert(depth >= 0),
         this.hexType = HexagonType.POINTY;
@@ -98,6 +100,7 @@ class HexagonGrid extends StatelessWidget {
     this.buildTile,
     this.buildChild,
     this.hexagonBuilder,
+    this.lines,
     this.rotation = 0,
   })  : assert(depth >= 0),
         this.hexType = HexagonType.FLAT;
@@ -111,6 +114,7 @@ class HexagonGrid extends StatelessWidget {
   final HexagonWidgetBuilder? hexagonBuilder;
   final Widget Function(Coordinates coordinates)? buildChild;
   final HexagonWidgetBuilder Function(Coordinates coordinates)? buildTile;
+  final List<HexagonLine>? lines;
   final int rotation;
 
   int get _maxHexCount => 1 + (depth * 2);
@@ -293,4 +297,25 @@ class HexagonGrid extends StatelessWidget {
       height,
     );
   }
+}
+
+class HexagonLine {
+  const HexagonLine({
+    required this.start,
+    required this.end,
+    this.color = Colors.black,
+    this.width = 1.0,
+  });
+
+  final Coordinates start;
+  final Coordinates end;
+  final Color color;
+  final double width;
+  final LineHeadType startHead = LineHeadType.none;
+  final LineHeadType endHead = LineHeadType.none;
+}
+
+enum LineHeadType {
+  none,
+  arrow;
 }
