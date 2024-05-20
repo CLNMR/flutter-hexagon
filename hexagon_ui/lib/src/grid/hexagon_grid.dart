@@ -1,7 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
+import 'package:hexagon_ui/src/line_painter.dart';
 
 import '../hexagon_widget.dart';
+
+final globalCoordinateKeys = <Coordinates, GlobalKey>{};
+final globalGridKey = GlobalKey(debugLabel: 'HexagonGrid');
 
 class HexagonGrid extends StatelessWidget {
   ///Hexagon shaped grid of hexagons.
@@ -41,7 +47,7 @@ class HexagonGrid extends StatelessWidget {
 
   ///Hexagon shaped grid of pointy hexagons.
   ///
-  /// [depth] - Controls how many hexagons from the center there are form grid edge. Default is 0. Must be 0 or positite int.
+  /// [depth] - Controls how many hexagons from the center there are form grid edge. Default is 0. Must be 0 or positive int.
   ///
   /// [width] - Optional with of the grid.
   ///
@@ -74,7 +80,7 @@ class HexagonGrid extends StatelessWidget {
 
   ///Hexagon shaped grid of flat hexagons.
   ///
-  /// [depth] - Controls how many hexagons from the center there are form grid edge. Default is 0. Must be 0 or positite int.
+  /// [depth] - Controls how many hexagons from the center there are form grid edge. Default is 0. Must be 0 or positive int.
   ///
   /// [width] - Optional with of the grid.
   ///
@@ -153,15 +159,17 @@ class HexagonGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
+      key: globalGridKey,
       builder: (context, constraints) {
         Size size = _hexSize(constraints);
 
-        HexagonWidget buildHex(Coordinates coordinates) {
+        HexagonWidget buildHex(Coordinates coordinates, {Key? key}) {
           HexagonWidgetBuilder builder = buildTile?.call(coordinates) ??
               hexagonBuilder ??
               HexagonWidgetBuilder();
 
           return builder.build(
+            key: key,
             type: hexType,
             inBounds: false,
             width: size.width,
@@ -190,39 +198,52 @@ class HexagonGrid extends StatelessWidget {
           );
         }
 
-        return Container(
-          color: color,
-          width: width,
-          height: height,
-          padding: edgeInsets,
-          child: _mainAxis(
-            (mainCount) {
-              return List.generate(
-                mainCount,
-                (mainIndex) {
-                  int currentDepth = mainIndex - depth;
-                  return _crossAxis(
-                    currentDepth.abs(),
-                    (crossCount) {
-                      return List.generate(crossCount, (crossIndex) {
-                        if (currentDepth <= 0)
-                          crossIndex = -depth - currentDepth + crossIndex;
-                        else
-                          crossIndex = -depth + crossIndex;
+        return Stack(
+          children: [
+            // Cells
+            Container(
+              color: color,
+              width: width,
+              height: height,
+              padding: edgeInsets,
+              child: _mainAxis(
+                (mainCount) {
+                  return List.generate(
+                    mainCount,
+                    (mainIndex) {
+                      int currentDepth = mainIndex - depth;
+                      return _crossAxis(
+                        currentDepth.abs(),
+                        (crossCount) {
+                          return List.generate(crossCount, (crossIndex) {
+                            if (currentDepth <= 0)
+                              crossIndex = -depth - currentDepth + crossIndex;
+                            else
+                              crossIndex = -depth + crossIndex;
 
-                        final coordinates = Coordinates.axial(
-                          hexType.isPointy ? crossIndex : currentDepth,
-                          hexType.isPointy ? currentDepth : crossIndex,
-                        );
-                        final rotated = coordinates.rotateClockwise(rotation);
-                        return buildHex.call(rotated);
-                      });
+                            final coordinates = Coordinates.axial(
+                              hexType.isPointy ? crossIndex : currentDepth,
+                              hexType.isPointy ? currentDepth : crossIndex,
+                            );
+                            final rotatedCoordinates =
+                                coordinates.rotateClockwise(rotation);
+
+                            globalCoordinateKeys[rotatedCoordinates] =
+                                GlobalKey(debugLabel: coordinates.toString());
+
+                            return buildHex.call(rotatedCoordinates,
+                                key: globalCoordinateKeys[rotatedCoordinates]);
+                          });
+                        },
+                      );
                     },
                   );
                 },
-              );
-            },
-          ),
+              ),
+            ),
+            // Lines
+            CustomPaint(painter: LinePainter(lines ?? [])),
+          ],
         );
       },
     );
@@ -305,14 +326,16 @@ class HexagonLine {
     required this.end,
     this.color = Colors.black,
     this.width = 1.0,
+    this.startHead = LineHeadType.none,
+    this.endHead = LineHeadType.none,
   });
 
   final Coordinates start;
   final Coordinates end;
   final Color color;
   final double width;
-  final LineHeadType startHead = LineHeadType.none;
-  final LineHeadType endHead = LineHeadType.none;
+  final LineHeadType startHead;
+  final LineHeadType endHead;
 }
 
 enum LineHeadType {

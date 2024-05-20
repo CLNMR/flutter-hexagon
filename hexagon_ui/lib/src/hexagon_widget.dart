@@ -179,7 +179,6 @@ class HexagonWidget extends StatelessWidget {
 }
 
 class HexagonWidgetBuilder {
-  final Key? key;
   final double? elevation;
   final Color? color;
   final Color? borderColor;
@@ -189,7 +188,6 @@ class HexagonWidgetBuilder {
   final VoidCallback? onTap;
 
   HexagonWidgetBuilder({
-    this.key,
     this.elevation,
     this.color,
     this.borderColor,
@@ -200,7 +198,6 @@ class HexagonWidgetBuilder {
   });
 
   HexagonWidgetBuilder.transparent({
-    this.key,
     this.padding,
     this.cornerRadius,
     this.child,
@@ -210,6 +207,7 @@ class HexagonWidgetBuilder {
         this.borderColor = Colors.transparent;
 
   HexagonWidget build({
+    Key? key,
     required HexagonType type,
     required inBounds,
     double? width,
