@@ -1,5 +1,7 @@
 library hexagon_ui;
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 
@@ -23,12 +25,14 @@ class HexagonWidget extends StatelessWidget {
   /// [child] - You content. Keep in mind that it will be clipped.
   ///
   /// [type] - A type of hexagon has to be either [HexagonType.FLAT] or [HexagonType.POINTY]
+  /// TODO: Add explanation of new parameters
   const HexagonWidget({
     Key? key,
     this.width,
     this.height,
     this.color,
     this.borderColor,
+    this.borderWidth,
     this.child,
     this.padding = 0.0,
     this.cornerRadius = 0.0,
@@ -59,6 +63,7 @@ class HexagonWidget extends StatelessWidget {
     this.height,
     this.color,
     this.borderColor,
+    this.borderWidth,
     this.child,
     this.padding = 0.0,
     this.elevation = 0,
@@ -89,6 +94,7 @@ class HexagonWidget extends StatelessWidget {
     this.height,
     this.color,
     this.borderColor,
+    this.borderWidth,
     this.child,
     this.padding = 0.0,
     this.elevation = 0,
@@ -108,6 +114,7 @@ class HexagonWidget extends StatelessWidget {
   final Widget? child;
   final Color? color;
   final Color? borderColor;
+  final double? borderWidth;
   final double padding;
   final double cornerRadius;
   final VoidCallback? onTap;
@@ -157,6 +164,7 @@ class HexagonWidget extends StatelessWidget {
               pathBuilder,
               color: color,
               borderColor: borderColor,
+              borderWidth: borderWidth,
               elevation: elevation,
             ),
             child: ClipPath(
@@ -182,8 +190,10 @@ class HexagonWidgetBuilder {
   final double? elevation;
   final Color? color;
   final Color? borderColor;
+  final double? borderWidth;
   final double? padding;
   final double? cornerRadius;
+  final bool? scale;
   final Widget? child;
   final VoidCallback? onTap;
 
@@ -191,8 +201,10 @@ class HexagonWidgetBuilder {
     this.elevation,
     this.color,
     this.borderColor,
+    this.borderWidth,
     this.padding,
     this.cornerRadius,
+    this.scale,
     this.child,
     this.onTap,
   });
@@ -201,12 +213,14 @@ class HexagonWidgetBuilder {
     this.padding,
     this.cornerRadius,
     this.child,
+    this.scale,
     this.onTap,
   })  : this.elevation = 0,
         this.color = Colors.transparent,
-        this.borderColor = Colors.transparent;
+        this.borderColor = Colors.transparent,
+        this.borderWidth = 0;
 
-  HexagonWidget build({
+  Widget build({
     Key? key,
     required HexagonType type,
     required inBounds,
@@ -215,19 +229,24 @@ class HexagonWidgetBuilder {
     Widget? child,
     bool replaceChild = false,
   }) {
-    return HexagonWidget(
-      key: key,
-      type: type,
-      inBounds: inBounds,
-      width: width,
-      height: height,
-      child: replaceChild ? child : this.child,
-      color: color,
-      borderColor: borderColor,
-      padding: padding ?? 0.0,
-      cornerRadius: cornerRadius ?? 0.0,
-      elevation: elevation ?? 0,
-      onTap: onTap,
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      final size = min(constraints.maxWidth, constraints.maxHeight);
+      final factor = scale == true ? (width ?? size) / 60 : 1.0;
+      return HexagonWidget(
+        key: key,
+        type: type,
+        inBounds: inBounds,
+        width: width,
+        height: height,
+        child: replaceChild ? child : this.child,
+        color: color,
+        borderColor: borderColor,
+        borderWidth: factor * (borderWidth ?? 0.0),
+        padding: factor * (padding ?? 0.0),
+        cornerRadius: factor * (cornerRadius ?? 0.0),
+        elevation: elevation ?? 0,
+        onTap: onTap,
+      );
+    });
   }
 }

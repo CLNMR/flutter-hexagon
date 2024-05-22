@@ -163,7 +163,7 @@ class HexagonGrid extends StatelessWidget {
       builder: (context, constraints) {
         Size size = _hexSize(constraints);
 
-        HexagonWidget buildHex(Coordinates coordinates, {Key? key}) {
+        Widget buildHex(Coordinates coordinates, {Key? key}) {
           HexagonWidgetBuilder builder = buildTile?.call(coordinates) ??
               hexagonBuilder ??
               HexagonWidgetBuilder();
