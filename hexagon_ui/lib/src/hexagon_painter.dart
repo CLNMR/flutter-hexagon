@@ -28,18 +28,20 @@ class HexagonPainter extends CustomPainter {
     _paint.isAntiAlias = true;
     _paint.style = PaintingStyle.fill;
 
-    _borderPaint.color = borderColor ?? Colors.white;
-    _borderPaint.isAntiAlias = true;
-    _borderPaint.style = PaintingStyle.stroke;
-    _borderPaint.strokeWidth = borderWidth ?? 4;
-
     Path path = pathBuilder.build(size);
     _path = path;
 
     if ((elevation) > 0)
       canvas.drawShadow(path, Colors.black, elevation, false);
     canvas.drawPath(path, _paint);
-    canvas.drawPath(path, _borderPaint);
+
+    if (borderColor != null) {
+      _borderPaint.color = borderColor!;
+      _borderPaint.isAntiAlias = true;
+      _borderPaint.style = PaintingStyle.stroke;
+      _borderPaint.strokeWidth = borderWidth ?? 4;
+      canvas.drawPath(path, _borderPaint);
+    }
   }
 
   @override

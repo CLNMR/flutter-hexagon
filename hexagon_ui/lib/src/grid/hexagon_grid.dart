@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 import 'package:hexagon_ui/src/line_painter.dart';
@@ -14,7 +12,7 @@ class HexagonGrid extends StatelessWidget {
   ///
   /// [hexType] - Required. Defines hexagon shape used for this grid.
   ///
-  /// [depth] - Controls how many hexagons from the center there are form grid edge. Default is 0. Must be 0 or positite int.
+  /// [depth] - Controls how many hexagons from the center there are form grid edge. Default is 0. Must be 0 or positive int.
   ///
   /// [width] - Optional with of the grid.
   ///
