@@ -323,17 +323,22 @@ class HexagonLine {
     required this.start,
     required this.end,
     this.color = Colors.black,
+    this.borderColor,
     this.width = 1.0,
     this.startHead = LineHeadType.none,
-    this.endHead = LineHeadType.none,
+    this.offset = Offset.zero,
   });
 
   final Coordinates start;
   final Coordinates end;
   final Color color;
+  final Color? borderColor;
   final double width;
   final LineHeadType startHead;
-  final LineHeadType endHead;
+
+  /// The offset of the line, in the coordinate system of the line. (+x is in
+  /// the direction of the line, +y is right of the line.)
+  final Offset offset;
 }
 
 enum LineHeadType {

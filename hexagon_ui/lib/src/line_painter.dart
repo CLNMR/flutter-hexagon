@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:hexagon_ui/src/grid/hexagon_grid.dart';
+import 'package:hexagon_ui/src/offset_extension.dart';
 
 class LinePainter extends CustomPainter {
   final List<HexagonLine> lines;
@@ -14,6 +15,7 @@ class LinePainter extends CustomPainter {
     final arrowSize = 10;
     final arrowAngle = pi / 6;
     final lineTrim = 0.8;
+
     final weirdConstantSoThat1MeansHalfOfTheHexagon = 0.57;
     final realTrim = lineTrim * weirdConstantSoThat1MeansHalfOfTheHexagon;
 
@@ -31,27 +33,40 @@ class LinePainter extends CustomPainter {
           targetHex.localToGlobal(targetHex.size.center(Offset.zero)));
       final angle = atan2(
           targetOffset.dy - startOffset.dy, targetOffset.dx - startOffset.dx);
+      final rotatedOffset = line.offset.rotate(angle);
+
+      startOffset += rotatedOffset;
+      targetOffset += rotatedOffset;
 
       targetOffset +=
           -Offset(cos(angle), sin(angle)) * realTrim * startHex.size.width;
 
-      final paint = Paint()
-        ..color = line.color
-        ..strokeWidth = line.width;
-      canvas.drawLine(startOffset, targetOffset, paint);
+      final paints = [
+        if (line.borderColor != null)
+          Paint()
+            ..color = line.borderColor!
+            ..strokeWidth = line.width + 2,
+        Paint()
+          ..color = line.color
+          ..strokeWidth = line.width,
+      ];
 
-      canvas.drawLine(
-          targetOffset,
-          targetOffset +
-              Offset(-arrowSize * cos(angle - arrowAngle),
-                  -arrowSize * sin(angle - arrowAngle)),
-          paint);
-      canvas.drawLine(
-          targetOffset,
-          targetOffset +
-              Offset(-arrowSize * cos(angle + arrowAngle),
-                  -arrowSize * sin(angle + arrowAngle)),
-          paint);
+      for (final paint in paints) {
+        canvas.drawLine(startOffset, targetOffset, paint);
+
+        canvas.drawLine(
+            targetOffset,
+            targetOffset +
+                Offset(-arrowSize * cos(angle - arrowAngle),
+                    -arrowSize * sin(angle - arrowAngle)),
+            paint);
+        canvas.drawLine(
+            targetOffset,
+            targetOffset +
+                Offset(-arrowSize * cos(angle + arrowAngle),
+                    -arrowSize * sin(angle + arrowAngle)),
+            paint);
+      }
     }
   }
 
