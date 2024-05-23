@@ -241,7 +241,7 @@ class HexagonWidgetBuilder {
         child: replaceChild ? child : this.child,
         color: color,
         borderColor: borderColor,
-        borderWidth: factor * (borderWidth ?? 0.0),
+        borderWidth: factor * (borderWidth ?? 6.0),
         padding: factor * (padding ?? 0.0),
         cornerRadius: factor * (cornerRadius ?? 0.0),
         elevation: elevation ?? 0,
