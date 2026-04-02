@@ -25,7 +25,12 @@ class HexagonWidget extends StatelessWidget {
   /// [child] - You content. Keep in mind that it will be clipped.
   ///
   /// [type] - A type of hexagon has to be either [HexagonType.FLAT] or [HexagonType.POINTY]
-  /// TODO: Add explanation of new parameters
+  ///
+  /// [borderColor] - Color of the hexagon border. No border if null.
+  ///
+  /// [borderWidth] - Width of the hexagon border.
+  ///
+  /// [onTap] - Callback when the hexagon is tapped.
   const HexagonWidget({
     Key? key,
     this.width,
@@ -40,9 +45,9 @@ class HexagonWidget extends StatelessWidget {
     this.inBounds = true,
     required this.type,
     this.onTap,
-  })  : assert(width != null || height != null),
-        assert(elevation >= 0),
-        super(key: key);
+  }) : assert(width != null || height != null),
+       assert(elevation >= 0),
+       super(key: key);
 
   /// Preferably provide one dimension ([width] or [height]) and the other will be calculated accordingly to hexagon aspect ratio
   ///
@@ -70,10 +75,10 @@ class HexagonWidget extends StatelessWidget {
     this.cornerRadius = 0.0,
     this.inBounds = true,
     this.onTap,
-  })  : assert(width != null || height != null),
-        assert(elevation >= 0),
-        this.type = HexagonType.FLAT,
-        super(key: key);
+  }) : assert(width != null || height != null),
+       assert(elevation >= 0),
+       this.type = HexagonType.FLAT,
+       super(key: key);
 
   /// Preferably provide one dimension ([width] or [height]) and the other will be calculated accordingly to hexagon aspect ratio
   ///
@@ -101,10 +106,10 @@ class HexagonWidget extends StatelessWidget {
     this.cornerRadius = 0.0,
     this.inBounds = true,
     this.onTap,
-  })  : assert(width != null || height != null),
-        assert(elevation >= 0),
-        this.type = HexagonType.POINTY,
-        super(key: key);
+  }) : assert(width != null || height != null),
+       assert(elevation >= 0),
+       this.type = HexagonType.POINTY,
+       super(key: key);
 
   final HexagonType type;
   final double? width;
@@ -138,7 +143,9 @@ class HexagonWidget extends StatelessWidget {
     if (height != null && width != null) return Size(width!, height!);
     if (height != null)
       return Size(
-          (height! * type.ratio) / pointyFactor, height! / pointyFactor);
+        (height! * type.ratio) / pointyFactor,
+        height! / pointyFactor,
+      );
     if (width != null)
       return Size(width! / flatFactor, (width! / type.ratio) / flatFactor);
     return Size.zero; //dead path
@@ -149,8 +156,11 @@ class HexagonWidget extends StatelessWidget {
     var innerSize = _innerSize();
     var contentSize = _contentSize();
 
-    HexagonPathBuilder pathBuilder = HexagonPathBuilder(type,
-        inBounds: inBounds, borderRadius: cornerRadius);
+    HexagonPathBuilder pathBuilder = HexagonPathBuilder(
+      type,
+      inBounds: inBounds,
+      borderRadius: cornerRadius,
+    );
 
     return GestureDetector(
       onTap: onTap,
@@ -173,10 +183,7 @@ class HexagonWidget extends StatelessWidget {
                 alignment: Alignment.center,
                 maxHeight: contentSize.height,
                 maxWidth: contentSize.width,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: child,
-                ),
+                child: Align(alignment: Alignment.center, child: child),
               ),
             ),
           ),
@@ -215,10 +222,10 @@ class HexagonWidgetBuilder {
     this.child,
     this.scale,
     this.onTap,
-  })  : this.elevation = 0,
-        this.color = Colors.transparent,
-        this.borderColor = Colors.transparent,
-        this.borderWidth = 0;
+  }) : this.elevation = 0,
+       this.color = Colors.transparent,
+       this.borderColor = Colors.transparent,
+       this.borderWidth = 0;
 
   Widget build({
     Key? key,
@@ -229,24 +236,26 @@ class HexagonWidgetBuilder {
     Widget? child,
     bool replaceChild = false,
   }) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final size = min(constraints.maxWidth, constraints.maxHeight);
-      final factor = scale == true ? (width ?? size) / 60 : 1.0;
-      return HexagonWidget(
-        key: key,
-        type: type,
-        inBounds: inBounds,
-        width: width,
-        height: height,
-        child: replaceChild ? child : this.child,
-        color: color,
-        borderColor: borderColor,
-        borderWidth: factor * (borderWidth ?? 6.0),
-        padding: factor * (padding ?? 0.0),
-        cornerRadius: factor * (cornerRadius ?? 0.0),
-        elevation: elevation ?? 0,
-        onTap: onTap,
-      );
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = min(constraints.maxWidth, constraints.maxHeight);
+        final factor = scale == true ? (width ?? size) / 60 : 1.0;
+        return HexagonWidget(
+          key: key,
+          type: type,
+          inBounds: inBounds,
+          width: width,
+          height: height,
+          child: replaceChild ? child : this.child,
+          color: color,
+          borderColor: borderColor,
+          borderWidth: factor * (borderWidth ?? 6.0),
+          padding: factor * (padding ?? 0.0),
+          cornerRadius: factor * (cornerRadius ?? 0.0),
+          elevation: elevation ?? 0,
+          onTap: onTap,
+        );
+      },
+    );
   }
 }
